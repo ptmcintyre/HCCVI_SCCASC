@@ -6,4 +6,4 @@ archive/
 biovars/
 system_distributions/
 type_specific_modeling/
-.pdf
+*.pdf

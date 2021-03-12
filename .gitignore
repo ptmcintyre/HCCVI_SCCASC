@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+archive/
+biovars/
+system_distributions/
+type_specific_modeling/

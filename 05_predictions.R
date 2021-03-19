@@ -24,6 +24,8 @@ historic.biovars
 dd <- stack(here("biovars/historic", historic.biovars)) 
 names(dd) <- sort(paste0("bio", 1:19))
 
+dd[[4]]
+
 # load recent climate data
 near.biovars<-list.files(here("biovars/near"), pattern=".tif")
 near.biovars

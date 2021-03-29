@@ -1,3 +1,6 @@
+###working as of 3/19/2020 PJM, with a kludge for getting sigma transformation of MD
+## couldn't calculate in the function, so reading the results of the raw MD raster in and converting
+## getting percentile of chi-square based on 2df (2 pca axis), then getting quantile with 1df, per Mahoney paper.
 
 
 library(ecoclim)
@@ -7,7 +10,7 @@ library(tidyverse)
 library(here)
 #library(caret)
 
-
+#gc()
 
 # load baseline TopoPrism data
 b <- parseMetadata(here("biovars/biovars_by_year_multiband/baseline"))
@@ -16,9 +19,9 @@ b <- dplyr::arrange(b, year)
 b <- b[b$year <= 2005,]
 baseline <- b
 
-# load recent normals
+# load  normals for comparing time period and emissions scenario
 #r <- parseMetadata("I:/climate_data/TopoWx/v2014/derived/normals/biovars/rasters_means", pattern=".tif")
-r <- parseMetadata(here("biovars/near"), pattern=".tif")
+r <- parseMetadata(here("biovars/near_85"), pattern=".tif")
 #r <- r[grepl("1981_2014", r$path),]
 vars <- r$variable
 recent <- motleyStack(r$path)
@@ -46,12 +49,12 @@ novelty <- function(x, ...){
       
       # unpack vector into matrix
       x <- x[2:length(x)]
-      m <- matrix(x, ncol=4, byrow=T)
+      m <- matrix(x, ncol=6, byrow=T)
       bl <- m[2:nrow(m),]
       
       # eliminate zero-variance variables
-      keep <- rep(T, 4)
-      for(i in 1:4) keep[i] <- sd(bl[,i]) != 0
+      keep <- rep(T, 6)
+      for(i in 1:6) keep[i] <- sd(bl[,i]) != 0
       keep <- which(keep)
       bl <- bl[, keep]
       rc <- matrix(m[1, keep], nrow=1)
@@ -74,7 +77,7 @@ novelty <- function(x, ...){
 #type<-"Great_Basin_Pinyon_Juniper_Woodland"
 mahal <- function(type, overwrite=F){
       
-      outfile<- paste0(here("type_specific_modeling/temporal_novelty"),"/", type, ".tif")
+      outfile<- paste0(here("type_specific_modeling/climate_departure/bl_near_85"),"/", type, ".tif")
       if(!overwrite & file.exists(outfile)){
             message("skipping")
             return("skipping")
@@ -91,7 +94,7 @@ mahal <- function(type, overwrite=F){
       ### prep climate data
       
       # restrict analysis to focal vars
-      vars_used <- imp$var[imp$type == gsub("_", " ", type)][1:4]
+      vars_used <- imp$var[imp$type == gsub("_", " ", type)][1:6]
      
       
       b <- lapply(baseline$path, stack) %>%
@@ -141,3 +144,19 @@ mahal <- function(type, overwrite=F){
 #types <- sample(names(veggies), length(names(veggies)))
 types<-names(veggies)
 v <- purrr::map_chr(types, possibly(mahal, "fail"))
+
+#read in test raster
+md.rasters <- parseMetadata(here("type_specific_modeling/temporal_novelty/bl_near_85"),pattern=".tif")
+i=5
+
+names(md.rasters)
+for(i in 1:length(md.rasters)){
+  veg.md<-raster(md.rasters[[i]][1])
+  veg.md[!is.na(veg.md)]<-pchi(veg.md[!is.na(veg.md)], 2)
+  veg.md[!is.na(veg.md)]<-qchi(veg.md[!is.na(veg.md)], 1)
+  writeRaster(veg.md, paste0(here("type_specific_modeling/climate_departure/bl_near_85"),"/", names(veg.md), "_sigma.tif"), fomrat="GTiff", overwrite=T)
+  
+}
+
+
+stopCluster(cl)

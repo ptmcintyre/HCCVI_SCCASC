@@ -5,6 +5,7 @@ library(raster)
 library(doParallel)
 library(tidyverse)
 library(here)
+library(adehabitatLT)
 #library(caret)
 
 
@@ -67,14 +68,17 @@ novelty <- function(x, ...){
       mdx <- mahalanobis(pcx, means, cvm)
       mdy <- mahalanobis(pcy, means, cvm)
       mdp <- mean(mdy >= mdx)
-      
-      c(mdy, mdp)
+      mdchi <- mdy
+      mdchi[!is.na(mdchi)]<-pchi(mdchi[!is.na(mdchi)],2)
+      mds<-mdchi
+      mds[!is.na(mds)]<-qchi(mds[!is.na(mds)],1)
+      c(mdy, mdp, mdchi, mds)
 }
 
-#type<-"Great_Basin_Pinyon_Juniper_Woodland"
+#type<-"Central_Tallgrass_Prairie"
 mahal <- function(type, overwrite=F){
       
-      outfile<- paste0(here("type_specific_modeling/temporal_novelty"),"/", type, ".tif")
+      outfile<- paste0(here("type_specific_modeling/testing_novelty"),"/", type, ".tif")
       if(!overwrite & file.exists(outfile)){
             message("skipping")
             return("skipping")
@@ -115,6 +119,9 @@ mahal <- function(type, overwrite=F){
       #PJM: reducing to 4 variables
       r <- subset(recent, vars_used) %>%
             crop(b) %>% extend(b)
+      #for testing, make r small, extent of central tallgrass
+      r<-crop(r, veg)
+      b<-crop(b, r)
       ve <- extend(veg, r) %>% 
             crop(r) %>%
             mask(r[[1]])
@@ -140,4 +147,49 @@ mahal <- function(type, overwrite=F){
 
 #types <- sample(names(veggies), length(names(veggies)))
 types<-names(veggies)
+types<-types[1]
 v <- purrr::map_chr(types, possibly(mahal, "fail"))
+
+
+
+#read in test raster
+md.rasters <- parseMetadata(here("type_specific_modeling/temporal_novelty"),pattern=".tif")
+i=1
+
+names(md.rasters)
+for(i in length(md.rasters)){
+  veg.md<-raster(md.rasters[[i]][1])
+  veg.md[!is.na(veg.md)]<-pchi(veg.md[!is.na(veg.md)], 2)
+  veg.md[!is.na(veg.md)]<-qchi(veg.md[!is.na(veg.md)], 1)
+  writeRaster(veg.md, paste0(here("type_specific_modeling/testing_novelty"),"/", names(veg.md), "_sigma.tif"), fomrat="GTiff", overwrite=T)
+
+}
+test.raster<-raster(testing)
+
+test.raster[[1]]
+pchi_raster<-pchi(test.raster[[1]], 2)
+
+max(test.raster[[1]])
+test.vector<-as.vector(test.raster[[1]])
+
+
+pchi_raster[test.raster[[1]]>0]<-pchi(test.vector, 2)
+psig<-qchi(pchi_raster,1)
+
+
+test.rast2<-test.raster[[1]]
+
+test.rast2[!is.na(test.rast2)]<-pchi(test.rast2[!is.na(test.rast2)], 2)
+
+
+test.rast3<-pchi(test.rast2[!is.na(test.rast2)], 2)
+as.vector(test.rast3)
+
+test.rast2[!is.na(test.rast2)]<-test.rast3
+
+as.vector(test.rast2)
+
+
+test.rast2[!is.na(test.rast2)]<-qchi(test.rast2[!is.na(test.rast2)], 1)
+cellStats(test.rast2, stat="mean")
+?cellStats

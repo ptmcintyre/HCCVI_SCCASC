@@ -24,10 +24,10 @@ historic.biovars
 dd <- stack(here("biovars/historic", historic.biovars)) 
 names(dd) <- sort(paste0("bio", 1:19))
 
-# load recent climate data
-near.biovars<-list.files(here("biovars/near"), pattern=".tif")
-near.biovars
-dr <- stack(here("biovars/near", near.biovars)) 
+# load future climate data
+fut.biovars<-list.files(here("biovars/future_85"), pattern=".tif")
+fut.biovars
+dr <- stack(here("biovars/future_85", fut.biovars)) 
 names(dr) <- sort(paste0("bio", 1:19))
 
 
@@ -136,10 +136,10 @@ r <- foreach(type=names(veggies),
                    ### save results
                     #type2<-str_trunc(type, 15, "left")
                     preds <- writeRaster(stack(prediction, prediction2),
-                                         filename=paste0(here("type_specific_modeling/niche_models/future/rasters_timeslice/pred_1975_2004_2015_2045_"), type),
+                                         filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_timeslice/pred_1975_2004_2035_2064_"), type),
                                          format="GTiff", overwrite=T)
                     deltas <- writeRaster(prediction2 - prediction,
-                                         filename=paste0(here("type_specific_modeling/niche_models/future/rasters_delta/delta__1975_2004_2015_2045_"), type),
+                                         filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_delta/delta__1975_2004_2035_2064_"), type),
                                          format="GTiff", overwrite=T)
                    # type2<- ifelse(nchar(type)>40), str_trunc(type, 15, "left")
                    # type2<-gsub

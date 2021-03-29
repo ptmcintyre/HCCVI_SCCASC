@@ -27,9 +27,9 @@ names(dd) <- sort(paste0("bio", 1:19))
 dd[[4]]
 
 # load recent climate data
-near.biovars<-list.files(here("biovars/near"), pattern=".tif")
+near.biovars<-list.files(here("biovars/near_85"), pattern=".tif")
 near.biovars
-dr <- stack(here("biovars/near", near.biovars)) 
+dr <- stack(here("biovars/near_85", near.biovars)) 
 names(dr) <- sort(paste0("bio", 1:19))
 
 # load veg data
@@ -142,10 +142,10 @@ r <- foreach(type=names(veggies),
                    
                    ### save results
                    preds <- writeRaster(stack(prediction, prediction2),
-                               filename=paste0(here("type_specific_modeling/niche_models/historic/rasters_timeslice/predictions_1975_2005_2015_2034_"), type),
+                               filename=paste0(here("type_specific_modeling/niche_models/near_85/rasters_timeslice/predictions_1975_2005_2015_2044_"), type),
                                format="GTiff", overwrite=T)
                    deltas <- writeRaster(prediction2 - prediction,
-                                         filename=paste0(here("type_specific_modeling/niche_models/historic/rasters_delta/deltas_1948_1980_1981_2014_"), type),
+                                         filename=paste0(here("type_specific_modeling/niche_models/near_85/rasters_delta/deltas_1975_2005_2015_2044_"), type),
                                          format="GTiff", overwrite=T)
                    
              }

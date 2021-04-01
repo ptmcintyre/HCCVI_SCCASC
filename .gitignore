@@ -4,6 +4,12 @@
 .Ruserdata
 archive/
 biovars/
+data_products/
+Mahalanobis_dev/
+mahalanobis_distance/
+summary_table/
 system_distributions/
 type_specific_modeling/
+z_scores/
+
 *.pdf

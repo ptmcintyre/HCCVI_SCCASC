@@ -8,6 +8,7 @@ library(raster)
 library(doParallel)
 library(tidyverse)
 library(here)
+library(adehabitatLT)
 #library(caret)
 
 #gc()
@@ -21,7 +22,7 @@ baseline <- b
 
 # load  normals for comparing time period and emissions scenario
 #r <- parseMetadata("I:/climate_data/TopoWx/v2014/derived/normals/biovars/rasters_means", pattern=".tif")
-r <- parseMetadata(here("biovars/near_85"), pattern=".tif")
+r <- parseMetadata(here("biovars/future_85"), pattern=".tif")
 #r <- r[grepl("1981_2014", r$path),]
 vars <- r$variable
 recent <- motleyStack(r$path)
@@ -77,7 +78,7 @@ novelty <- function(x, ...){
 #type<-"Great_Basin_Pinyon_Juniper_Woodland"
 mahal <- function(type, overwrite=F){
       
-      outfile<- paste0(here("type_specific_modeling/climate_departure/bl_near_85"),"/", type, ".tif")
+      outfile<- paste0(here("type_specific_modeling/climate_departure/bl_fut_85"),"/", type, ".tif")
       if(!overwrite & file.exists(outfile)){
             message("skipping")
             return("skipping")
@@ -146,7 +147,7 @@ types<-names(veggies)
 v <- purrr::map_chr(types, possibly(mahal, "fail"))
 
 #read in test raster
-md.rasters <- parseMetadata(here("type_specific_modeling/temporal_novelty/bl_near_85"),pattern=".tif")
+md.rasters <- parseMetadata(here("type_specific_modeling/climate_departure/bl_fut_85"),pattern=".tif")
 i=5
 
 names(md.rasters)
@@ -154,7 +155,7 @@ for(i in 1:length(md.rasters)){
   veg.md<-raster(md.rasters[[i]][1])
   veg.md[!is.na(veg.md)]<-pchi(veg.md[!is.na(veg.md)], 2)
   veg.md[!is.na(veg.md)]<-qchi(veg.md[!is.na(veg.md)], 1)
-  writeRaster(veg.md, paste0(here("type_specific_modeling/climate_departure/bl_near_85"),"/", names(veg.md), "_sigma.tif"), fomrat="GTiff", overwrite=T)
+  writeRaster(veg.md, paste0(here("type_specific_modeling/climate_departure/bl_fut_85"),"/", names(veg.md), "_sigma.tif"), fomrat="GTiff", overwrite=T)
   
 }
 

@@ -21,7 +21,6 @@ library(reshape2)
 
 
 
-
 #read in BPS systems_clipped to analysis exten
 list.files("F:/Projects/CEMML/NorthAmerican_Ecosystems_and_Macrogroups/")
 CEMML_systems_BPS<-raster("F:/Projects/CEMML/NorthAmerican_Ecosystems_and_Macrogroups/BPA_mask_int_clip.tif")

@@ -16,9 +16,9 @@ install_required_libs<-function(){
 install_required_libs()
 lapply(required_lib, require, character.only=T)
 
-time.period = "near" # chose "near" or "fut"
-scenario=85 # choose 45 or 85
-Time_Frame<- 1 #choose 1 for near or 2 for future
+time.period = "fut" # chose "near" or "fut"
+scenario=45 # choose 45 or 85
+Time_Frame<- 2 #choose 1 for near or 2 for future
 
 #read in csv file with exposure infomration
 #expMetrics<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/allveg_biovar_summaries_bl_near45.csv", as.is=T)

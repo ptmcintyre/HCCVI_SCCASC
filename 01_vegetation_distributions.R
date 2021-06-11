@@ -21,7 +21,8 @@ historic.biovars
 template<-raster(here("biovars/historic", historic.biovars[1]))
 
 #Read in systems raster (here filtered to only have target systems), crop to extent of climate layers
-CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif"))
+#CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif"))
+
 CEMML_systems_BPS<- crop(CEMML_systems_BPS, template)
 
 detectCores()
@@ -42,19 +43,4 @@ foreach(i=1:length(map_values)) %dopar% {
 }
 
 stopCluster(cl)
-
-
-raster::layerStats(mystack, 'pearson', na.rm=T)
-
-?layer_stats
-
-?layerStats
-
-my.var<-sampleRandom(soil_stack[[1]], size= ncell(soil_stack[[1]]) * 0.05 )
-
-# 
-# DT <- data.table(x = getValues(x)
-#                  ?getV
-
-my.var<- sampleRandom(getValues(soil_stack[[1]]), size= ncell(soil_stack[[1]]) * 0.05 )
 

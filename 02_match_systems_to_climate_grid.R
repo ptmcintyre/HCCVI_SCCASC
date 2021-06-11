@@ -49,19 +49,13 @@ for(veg in vegtypes_run){
       #veg<-raster(vegtypes[1])
       plot(veg)
       
-      # reclassify to either NA or 1, and convert to points
-      #veg <- reclassify(veg, rcl=c(-1,1,NA,  1,Inf,1), right=F)
-      #veg_points <- as.data.frame(rasterToPoints(veg))
-      #coordinates(veg_points) <- c("x", "y")
-      
+      # reclassify to either NA or 1, based on extraction of number of pixels of the sytem within MACA climate raster cells
       my.zone<-exact_extract(veg, maca_poly, 'sum')
       maca_poly$veg<-my.zone
       my.rast<-fasterizeDT(maca_poly, template, fun='sum',field="veg" )
       
-      # rasterize points at 800m. Criterion: 15 or more 90m presences
-      #upscaled <- rasterize(veg_points, template, field="layer", fun=sum)
-      #upscaled <- reclassify(upscaled, rcl=c(-1,14.5,NA,  14.5,Inf,1))
-      upscaled <- reclassify(my.rast, rcl=c(-1,14.5,NA,  14.5,Inf,1))
+
+      upscaled <- reclassify(my.rast, rcl=c(-1,14.5,NA,  14.5,Inf,1)) #reclassifies vlaues from -1 to 14.5 as NA, and from 14.5 to 1
       writeRaster(upscaled, filename=paste(outfile, ".tif", sep=""), overwrite=T)
       writeRaster(my.rast, filename=paste(outfile, "_continuous.tif", sep=""), overwrite=T)
 }

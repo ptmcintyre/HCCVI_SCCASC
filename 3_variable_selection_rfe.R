@@ -39,16 +39,8 @@ veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
 names(veggies)
 
 # select CONUS types
-cnmx <- c("Sonora_Mojave_Creosotebush_White_Bursage_Desert_Scrub",
-          "Sonoran_Paloverde_Mixed_Cacti_Desert_Scrub",
-          "Apacherian_Chihuahuan_SemiDesert_Grassland_and_Steppe",
-          "Chihuahuan_Creosotebush_Desert_Scrub",
-          "Chihuahuan_Mixed_Desert_and_Thornscrub",
-          "Northwestern_Great_Plains_Mixedgrass_Prairie", 
-          "Rocky_Mountain_Foothill_Limber_Pine_Juniper_Woodland",
-          "Madrean_Pinyon_Juniper_Woodland",
-          "Northern_Rocky_Mountain_Subalpine_Woodland_and_Parkland")
-veggies <- subset(veggies, names(veggies)[!names(veggies) %in% cnmx])
+focal_types <- c("Northern_Tallgrass_Prairie", "Central_Mixedgrass_Praire")
+veggies <- subset(veggies, names(veggies)[names(veggies) %in% focal_types])
 
 
 # this function fits a random forest model to a set of training data, 

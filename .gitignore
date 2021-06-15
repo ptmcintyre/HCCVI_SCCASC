@@ -10,5 +10,6 @@ summary_table/
 system_distributions/
 type_specific_modeling/
 z_scores/
+shapefiles/
 
 *.pdf

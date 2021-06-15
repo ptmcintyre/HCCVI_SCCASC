@@ -12,18 +12,23 @@ library(doParallel)
 
 #Read in CSV with names and numbers for target systems
 target_systems<-read.csv(here("system_distributions/CEMML_systems.csv"), as.is=T)
+#following line reads table to select only new adds (for adding in systems)
+target_systems<-subset(target_systems, add=="yes")
 map_values<-target_systems$NS.Map.Value.code
 map_values<-unique(map_values)
 
+#map_values<-c("7132", "7421")
+#i=2
 #read in a climate raster as a template for cropping vegetation systems
 historic.biovars<-list.files(here("biovars/historic"), pattern=".tif")
 historic.biovars
 template<-raster(here("biovars/historic", historic.biovars[1]))
 
 #Read in systems raster (here filtered to only have target systems), crop to extent of climate layers
-#CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif"))
+CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif")) #clipped version
 
-CEMML_systems_BPS<- crop(CEMML_systems_BPS, template)
+#CEMML_systems_BPS<-raster("F:/Projects/CEMML/EcosystemGrids/IVC_potv846_3sys_clip.tif")
+#CEMML_systems_BPS<- crop(CEMML_systems_BPS, template)
 
 detectCores()
 cpus <- 12

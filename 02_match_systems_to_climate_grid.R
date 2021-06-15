@@ -16,10 +16,11 @@ library(sf)
 outdir <- here("system_distributions/MACA_rasters")
 
 vegtypes <- list.files(here("system_distributions/system_rasters_raw"), pattern=".grd", full.names=T)
+#vegtypes<-vegtypes[c(2,14)]
 vegtypes<-gsub(".grd", "",vegtypes)
 vegtypes.short <- list.files(here("system_distributions/system_rasters_raw"), pattern=".grd")
 vegtypes.short<-gsub(".grd", "",vegtypes.short)
-
+#vegtypes.short<-vegtypes.short[c(2,14)]
 
 
 #Read in climate file to creat template raster for creating summed values of ecosystems
@@ -31,11 +32,14 @@ plot(template)
 template <- reclassify(template, c(-Inf, Inf, NA))
 
 # define the subset of types to run
+#test_rast<-raster(vegtypes[1])
+plot(test_rast)
+
+
 vegtypes_run <- vegtypes
 
 #polygon maca template for summarizing bps raster values in and converting to upscaped raster 
-maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
-
+maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_standard_poly_wgs84.shp") #updated with CRS- simple features no longer recognizing some older CRS refererences
 
 
 for(veg in vegtypes_run){

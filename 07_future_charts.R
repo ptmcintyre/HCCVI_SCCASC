@@ -1,4 +1,5 @@
 # FUTURE
+#2021- this script is not updated from 2017 version, as it was not needed for the CEMML project
 
 library(ecoclim)
 library(raster)

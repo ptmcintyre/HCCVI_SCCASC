@@ -38,7 +38,7 @@ dr <- crop(dr, dd)
 # load veg data
 veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
 veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
-#veggies<-veggies[[-22]]
+#veggies<-veggies[[c(1,14)]]
 names(veggies)
 
 

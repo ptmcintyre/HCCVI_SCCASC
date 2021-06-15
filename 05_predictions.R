@@ -3,7 +3,7 @@
 # and then makes baseline and recent suitability projections.
 # Each type uses a distinct optimal set of 6 climate variables, 
 # but all types use the same algorithm and parameters.
-
+# SPECIFY APPROPRIATE TIME / EMISSION COMPARISONS (THIS VERSION HAS TWO EMISSIONS AND Historic, near time period, and future time period)
 
 library(ecoclim)
 library(raster)
@@ -27,15 +27,15 @@ names(dd) <- sort(paste0("bio", 1:19))
 dd[[4]]
 
 # load recent climate data
-near.biovars<-list.files(here("biovars/near_85"), pattern=".tif")
+near.biovars<-list.files(here("biovars/future_85"), pattern=".tif")
 near.biovars
-dr <- stack(here("biovars/near_85", near.biovars)) 
+dr <- stack(here("biovars/future_85", near.biovars)) 
 names(dr) <- sort(paste0("bio", 1:19))
 
 # load veg data
 veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
 veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
-#veggies<-veggies[[-22]]
+veggies<-veggies[[c(1,14)]]
 
 
 # # select CONUS types
@@ -142,10 +142,10 @@ r <- foreach(type=names(veggies),
                    
                    ### save results
                    preds <- writeRaster(stack(prediction, prediction2),
-                               filename=paste0(here("type_specific_modeling/niche_models/near_85/rasters_timeslice/predictions_1975_2005_2015_2044_"), type),
+                               filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_timeslice/predictions_1975_2005_2035_2064_"), type),
                                format="GTiff", overwrite=T)
                    deltas <- writeRaster(prediction2 - prediction,
-                                         filename=paste0(here("type_specific_modeling/niche_models/near_85/rasters_delta/deltas_1975_2005_2015_2044_"), type),
+                                         filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_delta/deltas_1975_2005_2035_2064_"), type),
                                          format="GTiff", overwrite=T)
                    
              }

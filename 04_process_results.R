@@ -11,7 +11,7 @@ library(corrplot)
 # open rfe data
 d <- list.files(here("type_specific_modeling/variable_selection/rfe_results"), full.names=T)
 d <- d[grepl(".rds", d)]
-#d<-d[-22]
+#d<-d[c(1,14 )]
 ## VARIABLE RANKS ###############################
 
 culls <- lapply(d, function(x) {

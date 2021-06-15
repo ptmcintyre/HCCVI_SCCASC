@@ -38,6 +38,7 @@ preds <- list.files(here("type_specific_modeling/niche_models/historic/rasters_t
 # load veg data
 veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
 veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
+#veggies<-veggies[[c(1,14)]]
 #names(veggies) <- sub(".tif", "", basename(paths))
 
 # # select CONUS types
@@ -75,8 +76,7 @@ veggie.names<-names(veggies)
 cpus <- 12
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
-
-
+#type="Central_Mixedgrass_Prairie"
 # loop
 r <- foreach(type=names(veggies),
              .packages=c("viridis", "raster", "ecoclim", "dismo", "dplyr", "caret",

@@ -6,8 +6,8 @@ for general information see: https://www.natureserve.org/ccvi-ecosystems
 Nov 3, 2021- migrated former HCCVI assessment for CEMML to new South Central Climate Adaptation Science Center Repository. 
 
 
-General Planned updates: 
+General planned updates: 
 
-1) Uupdate scripts to R 4.x and replace use of older potentially deprecated packages from initial 2014 HCCVI assessment
+1) Update scripts to R 4.x and replace use of older potentially deprecated packages from initial 2014 HCCVI assessment
 
 2) Update inputs and methods to allow for wetland specific climate change vulnerability assessments with inputs such as climate water defict/depth to bedrock/altered sedimentation

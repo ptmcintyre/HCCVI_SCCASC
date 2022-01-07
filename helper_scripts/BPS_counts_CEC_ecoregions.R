@@ -8,6 +8,7 @@ library(sp)
 library(plyr)
 library(tidyverse)
 library(reshape2)
+library(here)
 #detach("package:raster", unload=T)
 #my.paths<-.libPaths()
 #install.packages('raster',lib=my.paths[1])
@@ -23,8 +24,24 @@ library(reshape2)
 
 #read in BPS systems_clipped to analysis exten
 list.files("F:/Projects/CEMML/NorthAmerican_Ecosystems_and_Macrogroups/")
-CEMML_systems_BPS<-raster("F:/Projects/CEMML/NorthAmerican_Ecosystems_and_Macrogroups/BPA_mask_int_clip.tif")
+#CEMML_systems_BPS<-raster("F:/Projects/CEMML/NorthAmerican_Ecosystems_and_Macrogroups/BPA_mask_int_clip.tif")
+#CEMML_systems_BPS<-raster("F:/Projects/CEMML/EcosystemGrids/IVC_potv846_3sys_90_aea.tif") #clipped version
 #cec_names <- crop(cec, veggies)
+
+#read in a climate raster as a template for cropping vegetation systems
+#historic.biovars<-list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/biovars/historic/bio1_MACA_CCSM4_Monthly_historical_1976-2005_metric.tif", pattern=".tif")
+#historic.biovars
+template<-raster("I:/projects/CEMML_DOD/CEMML_HCCVI/biovars/historic/bio1_MACA_CCSM4_Monthly_historical_1976-2005_metric.tif")
+
+#Read in systems raster (here filtered to only have target systems), crop to extent of climate layers
+#CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif")) #clipped version
+
+#CEMML_systems_BPS<-raster("F:/Projects/CEMML/EcosystemGrids/IVC_potv846_3sys_clip.tif")
+CEMML_systems_BPS<-raster("F:/Projects/CEMML/EcosystemGrids/NorthAmerica_IVC_Ecosys_pot_NatureServe_v846_wgs84.tif")
+select_systems<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/system_distributions/CEMML_systems.csv", as.is=T)
+select_systems<-select_systems[14,]
+CEMML_systems_BPS<- crop(CEMML_systems_BPS, template)
+CEMML_systems_BPS<-CEMML_systems_BPS%in%select_systems$NS.Map.Value.code
 
 #read in climate layer to crop BPS distributions to
 historic.biovars<-list.files(here("biovars/historic"), pattern=".tif")
@@ -40,9 +57,11 @@ dd<-projectRaster(dd, crs=crs(CEMML_systems_BPS))
 
 
 #Read in simple dissolved CEC region polygon
-cec_st<-st_read("F:/Projects/CEMML/boundaries/NA_CEC_Diss_AEA_MACA.shp")
+#cec_st<-st_read("F:/Projects/CEMML/boundaries/NA_CEC_Diss_AEA_MACA.shp")
+
+cec_st<-st_read("F:/Projects/CEMML/boundaries/NA_CEC_Diss_AEA_MACA_wgs84.shp")
 cec_st<-as_Spatial(cec_st)
-#CEC_names<-as.character(unique(cec_st$NAME))
+CEC_names<-as.character(unique(cec_st$NAME))
 #crop 
 cec_st<-crop(cec_st, CEMML_systems_BPS )
 CEC_names<-as.character(unique(cec_st$NAME))
@@ -54,7 +73,7 @@ cl <- makeCluster(cpus)
 registerDoParallel(cl)
 
 length(CEC_names)
-
+#note PJM need to subset cemm_systems_bps to only focal sysems
 i=1
 system.time(results<- foreach(i=1:length(CEC_names)) %dopar% {
   .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/3.5")
@@ -68,10 +87,11 @@ system.time(results<- foreach(i=1:length(CEC_names)) %dopar% {
 stopCluster(cl)
 
 
-save(results, file="I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/CEC_system_calcs.RData")
+save(results, file="I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/CEC_system_calc8_3_21.RData")
 results
 
-target_systems<-read.csv(here("system_distributions/CEMML_systems.csv"), as.is=T)
+target_systems<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/system_distributions/CEMML_systems.csv", as.is=T)
+target_systems<-target_systems[14,]
 systems_table<-target_systems[,c(1:2)]
 blank<-data.frame("blank", 0)
 names(blank)<-names(systems_table)
@@ -102,7 +122,7 @@ melt_systems<-subset(Melt_systmes, !is.na(Melt_systmes$value))
 melt_systems<-subset(melt_systems, melt_systems$system_name!="blank")
 
 
-write.csv(melt_systems, "I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/CEC_system_km.csv")
+write.csv(melt_systems, "I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/CEC_system_km_DMI_oak_8242021.csv")
 
 ?mutate_at
 ####older

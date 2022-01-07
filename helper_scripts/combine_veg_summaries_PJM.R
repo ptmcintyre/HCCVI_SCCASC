@@ -2,7 +2,7 @@
 ### The csvs in "biovar_summaries" were generated from this script: I:\projects\BLM\Workspace\auer\summary_table\exposure_summary_table_simple_FUTURE.R
 
 #files <- list.files("I:/projects/BLM/Workspace/harkness/exposure_summary_tables/topoWX/biovar_summaries", full.names=TRUE)
-files <- list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/bl_fut45", full.names=TRUE)
+files <- list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/base/bl_near45", full.names=TRUE)
 
 ### add column
 
@@ -21,7 +21,7 @@ for (f in files){
 dataframe <- do.call(rbind, lapply(files, function(x) read.csv(x, stringsAsFactors = FALSE)))
 dataframe <- dataframe[!is.na(dataframe$NAME),]
 
-write.csv(dataframe, file="I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/allveg_biovar_summaries_bl_fut45.csv")
+write.csv(dataframe, file="I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/base/BASE_allveg_biovar_summaries_bl_near45.csv")
 
 
 ##### get variable importance for all types

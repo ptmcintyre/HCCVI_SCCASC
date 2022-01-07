@@ -17,14 +17,14 @@ install_required_libs()
 lapply(required_lib, require, character.only=T)
 
 time.period = "fut" # chose "near" or "fut"
-scenario=45 # choose 45 or 85
+scenario=85 # choose 45 or 85
 Time_Frame<- 2 #choose 1 for near or 2 for future
 
 #read in csv file with exposure infomration
 #expMetrics<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/allveg_biovar_summaries_bl_near45.csv", as.is=T)
 expMetrics<-read.csv(paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/allveg_biovar_summaries_bl_",
                      time.period, scenario, ".csv"), as.is=T)
-
+unique(expMetrics$type)
 
 
 expMetrics<-subset(expMetrics, select=-c(1,2))
@@ -50,7 +50,7 @@ Exposure_systems<-merge(Melt_Exposure, systems, by="system_name", all.x=F)
 colnames(Exposure_systems)[colnames(Exposure_systems)=="NAME"]<-"Ecoreg_Name"
 
 
-regions<-read.csv("D:Tosh/data/HCCVI/d_CEC_Ecoregions.csv", as.is=T)
+regions<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/CEC_system_calcs/d_CEC_Ecoregions.csv", as.is=T)
 regions<-unique(regions[,c("Level3", "Ecoreg_Name")])
 Exposure_regions<-merge(Exposure_systems, regions, by="Ecoreg_Name", all.x=F)
 
@@ -149,7 +149,7 @@ my.cast2<- my.cast [ , c("Time_Frame_ID", "Scenario", "system", "CEC.ecoregion",
                         "Percent_system_affected", "Total_SqKM_system_BPS", "Sys.ID", "cec_ID", "ScoreDate"  )]
 
 
-write.csv(my.cast2, paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/temp/final_table_bl_", time.period, scenario, ".csv"), row.names = F)
+write.csv(my.cast2, paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/temp/June24_final_table_bl_", time.period, scenario, ".csv"), row.names = F)
 
 # 
 # 

@@ -29,7 +29,7 @@ Fire_VDep<-raster("F:/Projects/CEMML/Analysis/Inputs/LC16_VDep_200_for_analysis.
 
 
 #polygon maca template for summarizing bps raster values in and converting to upscaped raster 
-maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
+#maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
 #missing<-c(5, 11, 12, 14, 17, 18, 20)
 #read in target system (raw? probably so we can get count of cells)
 veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
@@ -37,7 +37,7 @@ veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".ti
 
 veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
 #veggies<-veggies[[c(1,14)]]
-#veggies<-veggies[[c(1)]]
+veggies<-veggies
 
 names(veggies)
 # define the subset of types to run
@@ -54,28 +54,36 @@ inputs_nr45<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/inte
 inputs_nr85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/change_suitability/near_85", pattern =".tif" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
 inputs_fut45<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/change_suitability/future_45", pattern =".tif" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
 inputs_fut85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/change_suitability/future_85", pattern =".tif" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
-#adding in 2 new systems only
-# inputs_nr45<-inputs_nr45[c(1,14),]
-# inputs_nr85<-inputs_nr85[c(1,14),]
-# inputs_fut45<-inputs_fut45[c(1,14),]
-# inputs_fut85<-inputs_fut85[c(1,14),]
+inputs_nr45<-inputs_nr45
+inputs_nr85<-inputs_nr85
+inputs_fut45<-inputs_fut45
+inputs_fut85<-inputs_fut85
+
+dep_nr45<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_near_45", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
+dep_nr85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_near_85", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
+dep_fut45<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_fut_45", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
+dep_fut85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_fut_85", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
+dep_nr45<-dep_nr45
+dep_nr85<-dep_nr85
+dep_fut45<-dep_fut45
+dep_fut85<-dep_fut85
 
 #polygon maca template for summarizing bps raster values in and converting to upscaped raster 
 maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
 
 system_input_table<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/score_cards/system_score_card_reference.csv", as.is=T)
-
+system_input_table<-system_input_table
 #selected forested systems- problem
 
 
 #system_input_table<-system_input_table[missing,]
-i=12
+i=1
 detectCores()
 cpus <- 12
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
-#i=1
-foreach(i=2:length(vegtypes_run)) %dopar% {
+#i=5
+foreach(i=1:length(vegtypes_run)) %dopar% {
   .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/3.5")
   library(raster)
   library(exactextractr)
@@ -85,13 +93,15 @@ foreach(i=2:length(vegtypes_run)) %dopar% {
   library(exactextractr)
   library(sf)
   library(rgdal)
+  library(fasterize)
 
    arc.check_product()
 
 selected_system<-names(veggies[[i]])
 type<-selected_system
-system_input<-subset(system_input_table, system_input_table$system_name==selected_system)
-  
+#system_input<-subset(system_input_table, system_input_table$system_name==selected_system)
+system_input<-system_input_table[i,] 
+
 #get cell counts for subsetting maca grid cells to focal type.
 veg_maca<-exact_extract(veggies[[i]], maca_poly, 'mean')
 maca_poly$count<-veg_maca
@@ -133,10 +143,13 @@ maca_focal_aea$Keystone<-system_input$Keystone
       focal_inv<-exact_extract(ruderal, maca_focal_aea, 'mean')
       focal_inv<-1-(round((focal_inv/100),3))
       maca_focal_aea$InvasiveC<-focal_inv
-  } else {
-    focal_inv<-exact_extract(invasive, maca_focal_aea, 'mean')
-    focal_inv<-round((focal_inv/100),3)
-    maca_focal_aea$InvasiveC<-focal_inv
+  } else {if(system_input$Ruderal=="invasive_model"){
+     focal_inv<-exact_extract(invasive, maca_focal_aea, 'mean')
+     focal_inv<-round((focal_inv/100),3)
+     maca_focal_aea$InvasiveC<-focal_inv}
+    else{
+      maca_focal_aea$InvasiveC<-NA
+    }
   }
 
 maca_focal_aea$SensitivityC<- rowMeans(cbind(maca_focal_aea$Fire_VDep,maca_focal_aea$ConditionC, maca_focal_aea$InvasiveC, maca_focal_aea$LDLoss), na.rm=T )
@@ -178,27 +191,23 @@ maca_focal_aea$SuitabilityFut_85<-focal_suitFut85
 
 
 #read in departure MD and covnert
-dep_nr45<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_near_45", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
-#dep_nr45<-dep_nr45[c(1,14)]
+
 focal_depNr45<-raster(dep_nr45[i])
 as.vector(focal_depNr45)
 focal_depNr45[focal_depNr45>5]<- 5
 focal_depNr45<-1-(focal_depNr45/5)
 
-dep_nr85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_near_85", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
-#dep_nr85<-dep_nr85[c(1,14)]
+
 focal_depNr85<-raster(dep_nr85[i])
 focal_depNr85[focal_depNr85>5]<- 5
 focal_depNr85<-1-(focal_depNr85/5)
 
-dep_fut45<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_fut_45", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
-#dep_fut45<-dep_fut45[c(1,14)]
+
 focal_depFt45<-raster(dep_fut45[i])
 focal_depFt45[focal_depFt45>5]<- 5
 focal_depFt45<-1-(focal_depFt45/5)
 
-dep_fut85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/intermediate/climate_departure/bl_fut_85", pattern ="sigma" , drops=c("xml", ".dbf", ".ovr", ".cpg", "Targets", "Archive"))
-#dep_fut85<-dep_fut85[c(1,14)]
+
 focal_depFt85<-raster(dep_fut85[i])
 focal_depFt85[focal_depFt85>5]<- 5
 focal_depFt85<-1-(focal_depFt85/5)
@@ -227,7 +236,7 @@ maca_focal_aea$HCCVI_Fut_85<- rowMeans(cbind(maca_focal_aea$ExposureFut_85 ,maca
 
 
 #write feature layer to GDB
-arc.write(path=paste0("F:/Projects/CEMML/analysis/Scorecards_CEMML.gdb/", type), maca_focal_aea, overwrite=TRUE)
+arc.write(path=paste0("F:/Projects/CEMML/analysis/Scorecards_CEMML_land.gdb/", type), maca_focal_aea, overwrite=TRUE)
 }
 
 stopCluster(cl)

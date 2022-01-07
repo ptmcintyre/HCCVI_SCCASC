@@ -3,6 +3,7 @@ library(rgdal)
 library(ecoclim)
 library(rgeos)
 library(doParallel)
+library(here)
 
 # load veg data
 # paths <- parseMetadata("I:/projects/BLM/Production/type_specific/veg_distributions/PRISM_800m/rasters", pattern=".tif")
@@ -11,8 +12,8 @@ library(doParallel)
 
 veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
 veg_list <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
-
-
+veg_list<-veg_list[[c(1,14)]]
+veg_list
 
 ########### Load Deltas and Z-score rasters for biovars #####################
 #(I generated separate rasters that masked out areas that didn't meet the criteria defined by Pat.This was confusingly done further down on this script and 
@@ -22,19 +23,19 @@ veg_list <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters)
 # deltas <- motleyStack(dz$path[dz$stat=="delta"])
  #zscores <- motleyStack(dz$path[dz$stat=="zscore"])
  
-dz <- parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/biovars/z_score_rasters/bl_fut_45", drops=c(".aux",".ovr", ".xml"))
+dz <- parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/biovars/z_score_rasters/bl_near_45", drops=c(".aux",".ovr", ".xml"))
  # deltas <- motleyStack(dz$path[dz$stat=="delta"])
  zscores <- stackBands(dz$path, 2) # second band is zscore (1st is delta)
  names(zscores) <- paste0(dz$variable, "_zscore")
  
 
 ### Load Masked means, deltas, and zscores #####
-deltas <- motleyStack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/fut_45/masked_rasters/masked_deltas/", full.names=TRUE))
-masked_zscores <- motleyStack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/fut_45/masked_rasters/masked_zscores/", full.names=TRUE))
-means <- motleyStack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/fut_45/masked_rasters/masked_baseline_means/", full.names=TRUE))
+deltas <- motleyStack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/near_45/masked_rasters/masked_deltas/", full.names=TRUE))
+masked_zscores <- motleyStack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/near_45/masked_rasters/masked_zscores/", full.names=TRUE))
+means <- motleyStack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/near_45/masked_rasters/masked_baseline_means/", full.names=TRUE))
 
 ### load thresholded rasters -- greater than 1SD, less than -1 
-thresholds <- stack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/fut_45/masked_rasters/thresholded_zscores/", full.names=TRUE))
+thresholds <- stack(list.files("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/near_45/masked_rasters/thresholded_zscores/", full.names=TRUE))
 
 # cluster stetup (this is to utilize all cpus on the server so it will run fast)
 cpus <- 10
@@ -197,7 +198,7 @@ r <- foreach(type=names(veg_list),
         #final <- summary[,complete.cases(summary)]
         #rownames(final) <- NULL
         
-        write.csv(format(final, digits=3), file=paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/", type, "_biovar_summary_bl_fut45.csv"))
+        write.csv(format(final, digits=3), file=paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/biovar_summaries/", type, "_biovar_summary_bl_near45.csv"))
 
      }
 

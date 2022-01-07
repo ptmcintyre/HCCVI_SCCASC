@@ -11,5 +11,12 @@ system_distributions/
 type_specific_modeling/
 z_scores/
 shapefiles/
+biovar_summaries/
+30m_ned_hlshd/
+info/
+temp_soils_mobi/
+process_initial_climate_data/
+GMU_project/
+biovar_summaries/
 
 *.pdf

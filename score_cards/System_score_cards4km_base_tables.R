@@ -22,18 +22,14 @@ ruderal<-raster("F:/Projects/CEMML/Analysis/Inputs/EVT_2020_Ruderal_HA_per.tif")
 land_cond<-raster("F:/Projects/CEMML/Analysis/Inputs/LCM.tif") #landscape condition (version from 2018)
 Fire_VDep<-raster("F:/Projects/CEMML/Analysis/Inputs/LC16_VDep_200_for_analysis.tif") #fire regime departure
 
-
-#read in target system (raw? probably so we can get count of cells); using the thresholded selected distribution of types. 
 veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
+#veg_rasters<- veg_rasters[missing]
+
 veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
+#veggies<-veggies[[c(1,14)]]
+veggies<-veggies
 
-
-#polygon maca template for summarizing bps raster values in and converting to upscaped raster 
-#maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
-
-#read in target system (raw? probably so we can get count of cells)
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
+names(veggies)
 # define the subset of types to run
 vegtypes_run <- names(veggies)
 
@@ -241,7 +237,7 @@ trans_data<-trans_data %>%
 
 
 
-write.csv(trans_data, paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/", type, "Base_Score_Card_Ozark_6_18_update.csv"))
+write.csv(trans_data, paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/", type, "Base_Score_Card_8_3_update.csv"))
 
 #write feature layer to GDB
 #arc.write(path=paste0("F:/Projects/CEMML/analysis/Scorecards_CEMML.gdb/", type), maca_focal_aea, overwrite=T)

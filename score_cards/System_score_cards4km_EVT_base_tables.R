@@ -24,18 +24,13 @@ Fire_VDep<-raster("F:/Projects/CEMML/Analysis/Inputs/LC16_VDep_200_for_analysis.
 
 
 #read in target system (raw? probably so we can get count of cells); using the thresholded selected distribution of types. 
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
-
+veg_rasters<- list.files(here("system_distributions/system_rasters_raw_evt"), pattern=".tif")
+veggies <- raster::stack(here("system_distributions/system_rasters_raw_evt", veg_rasters))
+vegtypes_run <- names(veggies)
 
 #polygon maca template for summarizing bps raster values in and converting to upscaped raster 
 #maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
 
-#read in target system (raw? probably so we can get count of cells)
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
-# define the subset of types to run
-vegtypes_run <- names(veggies)
 
 #raw
 #vegtypes <- parseMetadata(here("system_distributions/MACA_rasters"), pattern=".tif", drops=c(".xml"))
@@ -54,18 +49,18 @@ inputs_fut85<-parseMetadata("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/int
 #maca_poly<-st_read("F:/Projects/CEMML/ClimateGrids/MACA_CCSM4_Monthly_CONUS_Standard_Poly.shp")
 
 #haven't updated names, still refers to maca poly but references base polygon
-maca_poly<-st_read("F:/Projects/CEMML/boundaries/NA_CEC_Diss_AEA_MACA_wgs84.shp")
+maca_poly<-st_read("F:/Projects/CEMML/analysis/AFB_Footprints/AFBs_MACA_Dissolve/SnapMacaGrid_DOD_AFBs_dissolve.shp")
 
 
 
 system_input_table<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/score_cards/system_score_card_reference.csv", as.is=T)
-
+system_input_table<-subset(system_input_table, eastern=="yes")
 
 detectCores()
 cpus <- 12
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
-#i=14
+#i=12
 foreach(i=1:length(vegtypes_run)) %dopar% {
   .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/3.5")
   library(raster)
@@ -84,17 +79,10 @@ selected_system<-names(veggies[[i]])
 type<-selected_system
 system_input<-subset(system_input_table, system_input_table$system_name==selected_system)
   
-region_system<-read.csv("I:/projects/CEMML_DOD/CEMML_HCCVI/summary_table/CEC_system_calcs/CEC_system_km_maca.csv",as.is=T)
-reg_sys<-unique(region_system$system_name)
-
-reg_sub<-subset(region_system, region_system$system_name==selected_system)
-reg_sub<-subset(reg_sub, SqKM_system_ecoregion>49.99)
-
 #get cell counts for subsetting maca grid cells to focal type.
 veg_maca<-exact_extract(veggies[[i]], maca_poly, 'mean')
 maca_poly$count<-veg_maca
 maca_focal<-subset(maca_poly, maca_poly$count>0)
-maca_focal<-subset(maca_focal, maca_focal$NAME%in%reg_sub$ecoregion)
 
 #transform to equal area projection
 maca_focal_aea<-st_transform(maca_focal, crs(tri))
@@ -248,7 +236,7 @@ trans_data<-trans_data %>%
 
 
 
-write.csv(trans_data, paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/", type, "_Region_Score_Card_6_21.csv"))
+write.csv(trans_data, paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/data_products/", type, "Base_Score_Card_Ozark_6_18_update.csv"))
 
 #write feature layer to GDB
 #arc.write(path=paste0("F:/Projects/CEMML/analysis/Scorecards_CEMML.gdb/", type), maca_focal_aea, overwrite=T)

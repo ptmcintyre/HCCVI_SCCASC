@@ -1,25 +1,30 @@
-system_name,type,Keystone,Functional,Forest_Insect_disease,Ruderal,notes
-Central_Mixedgrass_Prairie,Central_Mixedgrass_Prairie,,1,no,LF_ruderal,"placeholder, pending review"
-Central_Tallgrass_Prairie,Central Tallgrass Prairie,,1,no,LF_ruderal,
-Columbia_Plateau_Western_Juniper_Woodland_and_Savanna,Columbia Plateau Western Juniper Woodland and Savanna,,0.5,no,invasive_model,
-Great_Basin_Pinyon_Juniper_Woodland,Great Basin Pinyon Juniper Woodland,,0.16,no,invasive_model,
-Great_Basin_Xeric_Mixed_Sagebrush_Shrubland,Great Basin Xeric Mixed Sagebrush Shrubland,,0.5,no,invasive_model,
-Inter_Mountain_Basins_Aspen_Mixed_Conifer_Forest_and_Woodland,Inter Mountain Basins Aspen Mixed Conifer Forest and Woodland,,0.84,yes,invasive_model,
-Inter_Mountain_Basins_Big_Sagebrush_Shrubland,Inter Mountain Basins Big Sagebrush Shrubland,,0.5,no,invasive_model,
-Inter_Mountain_Basins_Big_Sagebrush_Steppe,Inter Mountain Basins Big Sagebrush Steppe,,0.5,no,invasive_model,
-Inter_Mountain_Basins_Mat_Saltbush_Shrubland,Inter Mountain Basins Mat Saltbush Shrubland,,0.16,no,invasive_model,
-Inter_Mountain_Basins_Mixed_Salt_Desert_Scrub,Inter Mountain Basins Mixed Salt Desert Scrub,,0.5,no,invasive_model,
-Inter_Mountain_Basins_Montane_Sagebrush_Steppe,Inter Mountain Basins Montane Sagebrush Steppe,,0.5,no,invasive_model,
-North_Central_Interior_Beech_Maple_Forest_,North Central Interior Beech Maple Forest ,,1,yes,LF_ruderal,"placeholder, pending review"
-North_Central_Interior_Dry_Mesic_Oak_Forest_and_Woodland,North Central Interior Dry Mesic Oak Forest and Woodland,,0.75,yes,LF_ruderal,"placeholder, pending review"
-Northern_Tallgrass_Prairie,Northern Tallgrass Prairie,,1,no,LF_ruderal,"placeholder, pending review"
-Northwestern_Great_Plains_Mixedgrass_Prairie,Northwestern Great Plains Mixedgrass Prairie,0.88,0.5,no,LF_ruderal,
-Ozark_Ouachita_Dry_Oak_Woodland,Ozark Ouachita Dry Oak Woodland,,0.5,yes,LF_ruderal,"placeholder, pending review"
-Rocky_Mountain_Gambel_Oak_Mixed_Montane_Shrubland,Rocky Mountain Gambel Oak Mixed Montane Shrubland,,0.5,no,invasive_model,
-Southeastern_Great_Plains_Tallgrass_Prairie,Southeastern Great Plains Tallgrass Prairie,,1,no,LF_ruderal,"placeholder, pending review"
-Southern_Rocky_Mountain_Dry_Mesic_Montane_Mixed_Conifer_Forest_and_Woodland,Southern Rocky Mountain Dry Mesic Montane Mixed Conifer Forest and Woodland,,0.5,yes,invasive_model,
-Southern_Rocky_Mountain_Mesic_Montane_Mixed_Conifer_Forest_and_Woodland,Southern Rocky Mountain Mesic Montane Mixed Conifer Forest and Woodland,,0.5,yes,invasive_model,
-Southern_Rocky_Mountain_Montane_Subalpine_Grassland,Southern Rocky Mountain Montane Subalpine Grassland,,0.5,no,invasive_model,
-Southern_Rocky_Mountain_Ponderosa_Pine_Woodland,Southern Rocky Mountain Ponderosa Pine Woodland,,0.5,yes,invasive_model,
-Western_Great_Plains_Foothill_and_Piedmont_Grassland,Western Great Plains Foothill and Piedmont Grassland,,0.75,no,LF_ruderal,"placeholder, pending review"
-Western_Great_Plains_Shortgrass_Prairie,Western Great Plains Shortgrass Prairie,0.88,0.5,no,LF_ruderal,
+system_name,type,Keystone,Functional,Forest_Insect_disease,Ruderal,notes,update_7_22_2021
+Atlantic_Coastal_Plain_Upland_Longleaf_Pine_Woodland,Atlantic Coastal Plain Upland Longleaf Pine Woodland,,0.75,yes,LF_ruderal,invasive is null ,
+Central_Tallgrass_Prairie,Central Tallgrass Prairie,,1,no,,invasive is null ,yes
+Central_Mixedgrass_Prairie,Central_Mixedgrass_Prairie,,1,no,,invasive is null ,yes
+Columbia_Plateau_Western_Juniper_Woodland_and_Savanna,Columbia Plateau Western Juniper Woodland and Savanna,,0.5,no,invasive_model,,
+Great_Basin_Pinyon_Juniper_Woodland,Great Basin Pinyon Juniper Woodland,,0.16,no,invasive_model,,
+Great_Basin_Xeric_Mixed_Sagebrush_Shrubland,Great Basin Xeric Mixed Sagebrush Shrubland,,0.5,no,invasive_model,,
+Inter_Mountain_Basins_Aspen_Mixed_Conifer_Forest_and_Woodland,Inter Mountain Basins Aspen Mixed Conifer Forest and Woodland,,0.84,yes,invasive_model,,
+Inter_Mountain_Basins_Big_Sagebrush_Shrubland,Inter Mountain Basins Big Sagebrush Shrubland,,0.5,no,invasive_model,,
+Inter_Mountain_Basins_Big_Sagebrush_Steppe,Inter Mountain Basins Big Sagebrush Steppe,,0.5,no,invasive_model,,
+Inter_Mountain_Basins_Mat_Saltbush_Shrubland,Inter Mountain Basins Mat Saltbush Shrubland,,0.16,no,invasive_model,,
+Inter_Mountain_Basins_Mixed_Salt_Desert_Scrub,Inter Mountain Basins Mixed Salt Desert Scrub,,0.5,no,invasive_model,,
+Inter_Mountain_Basins_Montane_Sagebrush_Steppe,Inter Mountain Basins Montane Sagebrush Steppe,,0.5,no,invasive_model,,
+North_Central_Interior_Beech_Maple_Forest,North Central Interior Beech Maple Forest ,,1,yes,LF_ruderal,"placeholder, pending review",
+North_Central_Interior_Dry_Mesic_Oak_Forest_and_Woodland,North Central Interior Dry Mesic Oak Forest and Woodland,,0.75,yes,LF_ruderal,"placeholder, pending review",
+North_Central_Interior_Maple_Basswood_Forest,North-Central Interior Maple-Basswood Forest,,1,yes,,"placeholder, pending review",
+Northern_and_Central_Californian_Dry_Mesic Chaparral,Northern and Central Californian Dry-Mesic Chaparral,,1,no,LF_ruderal,"placeholder, pending review",
+Northern_Tallgrass_Prairie,Northern Tallgrass Prairie,,1,no,,invasive is null ,
+Northwestern_Great_Plains_Mixedgrass_Prairie,Northwestern Great Plains Mixedgrass Prairie,0.88,0.5,no,LF_ruderal,,
+Ozark_Ouachita_Dry_Oak_Woodland,Ozark Ouachita Dry Oak Woodland,,0.5,yes,LF_ruderal,"placeholder, pending review",
+Ozark_Ouchita_Dry_Mesic_Oak_Forest,Ozark-Ouchita Dry-Mesic Oak Forest,,0.75,yes,,invasive is null ,
+Rocky_Mountain_Gambel_Oak_Mixed_Montane_Shrubland,Rocky Mountain Gambel Oak Mixed Montane Shrubland,,0.5,no,invasive_model,,
+Rocky_Mountain_Subalpine_Dry_Mesic_Spruce_Fir_Forest_and_Woodland,Rocky Mountain Subalpine Dry-Mesic Spruce-Fir Forest and Woodland,,0.16,yes,,invasive is null ,
+Southeastern_Great_Plains_Tallgrass_Prairie,Southeastern Great Plains Tallgrass Prairie,,1,no,,invasive is null ,
+Southern_Rocky_Mountain_Dry_Mesic_Montane_Mixed_Conifer_Forest_and_Woodland,Southern Rocky Mountain Dry Mesic Montane Mixed Conifer Forest and Woodland,,0.5,yes,invasive_model,,
+Southern_Rocky_Mountain_Mesic_Montane_Mixed_Conifer_Forest_and_Woodland,Southern Rocky Mountain Mesic Montane Mixed Conifer Forest and Woodland,,0.5,yes,invasive_model,,
+Southern_Rocky_Mountain_Montane_Subalpine_Grassland,Southern Rocky Mountain Montane Subalpine Grassland,,0.5,no,invasive_model,,
+Southern_Rocky_Mountain_Ponderosa_Pine_Woodland,Southern Rocky Mountain Ponderosa Pine Woodland,,0.5,yes,invasive_model,,
+Western_Great_Plains_Foothill_and_Piedmont_Grassland,Western Great Plains Foothill and Piedmont Grassland,0.88,0.75,no,,invasive is null ,
+Western_Great_Plains_Shortgrass_Prairie,Western Great Plains Shortgrass Prairie,0.88,0.5,no,LF_ruderal,,

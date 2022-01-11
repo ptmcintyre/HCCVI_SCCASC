@@ -25,17 +25,17 @@ library(here)
 here()
 # load climate data
 gc()
-historic.biovars<-list.files(here("biovars/historic"), pattern=".tif")
+historic.biovars<-list.files(here("process_initial_climate_data/bio_vars_normals/historic"), pattern=".tif")
 historic.biovars
-dd <- stack(here("biovars/historic", historic.biovars)) 
+#dd <- stack(here("biovars/historic", historic.biovars)) 
+dd <- stack(here("process_initial_climate_data/bio_vars_normals/historic", historic.biovars)) 
 names(dd) <- sort(paste0("bio", 1:19))
-
-
+dd[[19]]
 
 # load veg data
 #paths <- parseMetadata("I:/projects/BLM/Production/type_specific/veg_distributions/PRISM_800m/rasters")
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
+veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
 names(veggies)
 
 # select CONUS types
@@ -103,7 +103,7 @@ for(type in names(veggies)) {
       
       # slave coordination
       #outfile <- paste0("I:/projects/BLM/Production/type_specific/variable_selection/conus/rfe_results/rfe_", type, ".rds")
-      outfile <- paste0("I:/projects/CEMML_DOD/CEMML_HCCVI/type_specific_modeling/variable_selection/rfe_results/rfe_", type, ".rds")
+      outfile <- paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/type_specific_modeling/variable_selection/rfe_results/rfe_", type, ".rds")
       if(file.exists(outfile)) next()
       saveRDS(type, outfile)
       print(type)
@@ -162,14 +162,16 @@ for(type in names(veggies)) {
                         
                         ### select training points
                         set.seed(rep)
-                        train_pres <- pixels %>% filter(presence==T & train==T) %>% sample_n(700)
+                        train_pres <- pixels %>% filter(presence==T & train==T)
+                        train_pres %>% sample_n(.9*nrow(train_pres)) #PJM replaced 700 with .9*sample size
                         set.seed(rep)
-                        train_abs <- pixels %>% filter(presence==F & train==T) %>% sample_n(700)
+                        train_abs <- pixels %>% filter(presence==F & train==T) 
+                        train_abs%>% sample_n(.9*nrow(train_abs)) #PJM replaced 700 with .9*sample size
                         coordinates(train_pres) <- c("x", "y")
                         coordinates(train_abs) <- c("x", "y")
                         
                         ### select evaluation points
-                        evalpx <- min(7000, min(table(pixels$presence, pixels$train)[,1]))
+                        evalpx <- min(1000, min(table(pixels$presence, pixels$train)[,1]))
                         set.seed(rep)
                         eval_pres <- pixels %>% filter(presence==T & train==F) %>% sample_n(evalpx)
                         set.seed(rep)

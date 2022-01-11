@@ -36,8 +36,17 @@ culls$veg <- sub("rfe_", "", culls$veg)
 culls$veg <- gsub("_", " ", culls$veg)
 
 # sort veg types by similarity of variable preferences
-vegorder <- as.integer(rownames(corrplot::corrplot(cor(t(culls[,-20])), order="FPC")))
-varorder <- rownames(corrplot::corrplot(cor(culls[,-20]), order="FPC"))
+
+###pjm- row names not returngin from corrplot, troubleshooting
+#vegorder <- as.integer(rownames(corrplot::corrplot(cor(t(culls[,-20])), order="FPC"))) #not working, brokne to 2 parts, PJM
+veg.cor<-corrplot::corrplot(cor(t(culls[,-20])), order="FPC") #pjm part 1, run corrplot
+vegorder <- as.integer(rownames(veg.cor$corr)) #grab row order from $corr
+
+#varorder <- rownames(corrplot::corrplot(cor(culls[,-20]), order="FPC"))#not working, brokne to 2 parts, PJM
+var.cor<-corrplot::corrplot(cor(culls[,-20]), order="FPC")
+varorder <- rownames(var.cor$corr)
+
+
 veglevels <- as.character(culls$veg[vegorder])
 culls$veg <- factor(culls$veg, levels=culls$veg[vegorder])
 

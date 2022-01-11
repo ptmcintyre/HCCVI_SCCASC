@@ -5,38 +5,45 @@
 #next step is to upscale to resolution of climate rasters
 #Slow- could be updated to different workflow
 gc()
+rm()
+
 library(raster)
 library(rasterDT)
 library(here)
 library(doParallel)
+library(terra)
 
 #Read in CSV with names and numbers for target systems
-target_systems<-read.csv(here("system_distributions/CEMML_systems.csv"), as.is=T)
+target_systems<-read.csv(here("system_distributions/SCASC_systems.csv"), as.is=T)
 #following line reads table to select only new adds (for adding in systems)
-target_systems<-subset(target_systems, add=="yes")
+target_systems<-subset(target_systems, project=="sccasc")
 map_values<-target_systems$NS.Map.Value.code
 map_values<-unique(map_values)
 
 #map_values<-c("7132", "7421")
 #i=2
 #read in a climate raster as a template for cropping vegetation systems
-historic.biovars<-list.files(here("biovars/historic"), pattern=".tif")
+historic.biovars<-list.files(here("process_initial_climate_data/biovars_year"), pattern=".tif", full.names = T)
 historic.biovars
-template<-raster(here("biovars/historic", historic.biovars[1]))
+#template<-raster(historic.biovars[1])  #using raster package
+template<-rast(historic.biovars[1])  #using new terra package
 
 #Read in systems raster (here filtered to only have target systems), crop to extent of climate layers
-CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif")) #clipped version
+#CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif")) #clipped version
+#CEMML_systems_BPS<-rast("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_Ecosystems_potential_NatureServe_v846.tif")
+#CEMML_systems_BPS<-raster("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_BPS846_wgs84.tif")
+CEMML_systems_BPS2<-rast("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_BPS846_wgs84.tif")
+activeCat(CEMML_systems_BPS2, layer=1)
+setCats(CEMML_systems_BPS2, layer=1,cats(CEMML_systems_BPS2)[1]$Value)
 
-#CEMML_systems_BPS<-raster("F:/Projects/CEMML/EcosystemGrids/IVC_potv846_3sys_clip.tif")
-#CEMML_systems_BPS<- crop(CEMML_systems_BPS, template)
 
 detectCores()
-cpus <- 12
+cpus <- 5
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
 i=1
 foreach(i=1:length(map_values)) %dopar% {
-  .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/3.5")
+  .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/4.1")
   library(raster)
   library(here)
   focal_system<-CEMML_systems_BPS

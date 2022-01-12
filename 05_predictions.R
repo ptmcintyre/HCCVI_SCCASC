@@ -15,7 +15,7 @@ library(tidyr)
 library(caret)
 library(mgcv)
 library(randomForest)
-
+library(here)
 
 
 # load baseline climate data
@@ -33,9 +33,9 @@ dr <- stack(here("biovars/future_85", near.biovars))
 names(dr) <- sort(paste0("bio", 1:19))
 
 # load veg data
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
-veggies<-veggies[[c(1,14)]]
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
+veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
+
 
 
 # # select CONUS types
@@ -57,7 +57,7 @@ imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importa
 imp <- imp[imp$rank >= 14,]
 
 # cluster stetup
-cpus <- 12
+cpus <- 2
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
 
@@ -95,8 +95,8 @@ r <- foreach(type=names(veggies),
                    prevalence <- nrow(pres) / nrow(px)
                    pixels <- rbind(pres, abs)
                    
-                   train_pres <- pixels %>% filter(presence==T) %>% sample_n(1000)
-                   train_abs <- pixels %>% filter(presence==F) %>% sample_n(1000)
+                   train_pres <- pixels %>% filter(presence==T) %>% sample_n(1000, replace=T)
+                   train_abs <- pixels %>% filter(presence==F) %>% sample_n(1000, replace=T)
                    coordinates(train_pres) <- c("x", "y")
                    coordinates(train_abs) <- c("x", "y")
                    
@@ -142,10 +142,10 @@ r <- foreach(type=names(veggies),
                    
                    ### save results
                    preds <- writeRaster(stack(prediction, prediction2),
-                               filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_timeslice/predictions_1975_2005_2035_2064_"), type),
+                               filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_timeslice/predictions_1950_1980_2015_2035_"), type),
                                format="GTiff", overwrite=T)
                    deltas <- writeRaster(prediction2 - prediction,
-                                         filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_delta/deltas_1975_2005_2035_2064_"), type),
+                                         filename=paste0(here("type_specific_modeling/niche_models/future_85/rasters_delta/deltas_1950_1980_2015_2035_"), type),
                                          format="GTiff", overwrite=T)
                    
              }

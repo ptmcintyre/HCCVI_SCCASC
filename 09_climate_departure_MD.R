@@ -116,7 +116,7 @@ mahal <- function(type, overwrite=F){
       # stopCluster(cl)
       # b <- stack(b)
       
-      #PJM: reducing to 4 variables
+      #PJM: reducing to 6 (make sure not 4) variables
       r <- subset(recent, vars_used) %>%
             crop(b) %>% extend(b)
       ve <- extend(veg, r) %>% 

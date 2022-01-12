@@ -20,9 +20,9 @@ month_day<-as.data.frame(cbind(month_num, start_day, end_day))
 years<-seq(2006,2100, 1)
 
 
-#base name of file
-base_name<-"LOCA_CCSM4_Monthly_rcp85_PPTmm"
-
+#select base name of file
+#base<-"LOCA_CCSM4_Monthly_rcp85_PPTmm"
+#base
 i=1
 j=1
 for (i in 1:length(clim.files)){
@@ -53,6 +53,12 @@ dim(pr.array)
     r<-r*86400  #multiply by 86400 to convert to mm/day (seconds in a day)
     # writeRaster(r, paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/historic/", 
     #                       base_name,"_", years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
+    
+    
+    ##part below converts from coordinates of 0 to 360 to -180 to 180
+    xmin(r)=xmin(r)-360
+    xmax(r)=xmax(r)-360
+    
     
     writeRaster(r, paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/rcp85/", 
                           base_name,"_", years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
@@ -102,12 +108,16 @@ for (i in 1:length(clim.files)){
         r <- raster(t(pr.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), template=loca.template)
         r<-flip(r)
         r<-r*86400  #multiply by 86400 to convert to mm/day (seconds in a day)
-         writeRaster(r, paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/historic/", 
+         
+        ##part below converts from coordinates of 0 to 360 to -180 to 180
+        xmin(r)=xmin(r)-360
+        xmax(r)=xmax(r)-360
+        
+        writeRaster(r, paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/historic/", 
                                base_name,"_", years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
         
-        #writeRaster(r, paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/rcp85/", 
-         #                     base_name,"_", years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
-        
+         
+       
     }
 }
 

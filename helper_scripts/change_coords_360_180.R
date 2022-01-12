@@ -15,7 +15,7 @@ for (i in 1:length(clim.files)){
 
 
 
-clim.files<-list.files("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year", full.names = T)
+clim.files<-list.files("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/historic", full.names = T)
 new.file<-gsub("monthly_vals_year", "monthly_vals_yearWGS84",clim.files)
 i=1
 for (i in 1:length(clim.files)){
@@ -26,6 +26,20 @@ for (i in 1:length(clim.files)){
   out.file<-new.file[i]
   writeRaster(newR, out.file, overwrite=TRUE)
 }
+
+
+clim.files<-list.files("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/rcp85", full.names = T)
+new.file<-gsub("monthly_vals_year", "monthly_vals_yearWGS84",clim.files)
+i=1
+for (i in 1:length(clim.files)){
+  oldR<-rast(clim.files[i])
+  xmin(oldR)=xmin(oldR)-360
+  xmax(oldR)=xmax(oldR)-360
+  newR<-oldR
+  out.file<-new.file[i]
+  writeRaster(newR, out.file, overwrite=TRUE)
+}
+
 
 
 

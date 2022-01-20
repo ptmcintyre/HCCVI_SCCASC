@@ -41,6 +41,10 @@ dir.create(future_out) #creates directory if doesn't exist
 historic_years<-seq(1950,2005, 1)
 future_years<-seq(2006,2100, 1)
 
+##concatenate GCM name with other info, don't change
+historic_name<-paste0("LOCA_", GCM,"_Monthly_historical")
+future_name<-paste0("LOCA_", GCM,"_Monthly_rcp85")
+
 loca.template<-raster(hist.pr.files[1]) #selecting first file to act as a template for both hist and futre (proj, coords, cells)
 #nc_data <- nc_open(hist.pr.files[1]) #to explore one netcdf file
 
@@ -265,7 +269,7 @@ for (i in 1:length(rcp85.pr.files)){
         xmin(r.tmin)=xmin(r.tmin)-360 ; xmax(r.tmin)=xmax(r.tmin)-360
         #plot(r) 
         
-        writeRaster(r.tmin, paste0(future_out, "/", future_name, "_", "tmin_",future_years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
+        writeRaster(r.tmin, paste0(future_out, "/", future_name, "_", "Tmin_",future_years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
         
     }
     rm(tmin.array);gc()

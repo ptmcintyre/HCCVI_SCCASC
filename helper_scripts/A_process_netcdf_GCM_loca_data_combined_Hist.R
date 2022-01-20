@@ -3,7 +3,7 @@
 #and translates them to individual rasters of monthly target data by year
 #loca data is contained from download site in separate pr tasmin, tasmax folders
 #and historial vs. rcp85 folders (we are ignoring rcp45)
-
+#coud be streamlined and functionized. working as of 1/20/2022
 
 rm(list=ls())
 gc()
@@ -14,16 +14,13 @@ library(rgdal) # package for geospatial analysis
 library(ggplot2) # package for plotting
 library(terra)  #newer appraoch to rasters from the "raster package" team
 
-##user inputs###################################################################
+#####################################################################
+#USER INPUTS
 
-###Prove name of GCM for adddint to output file nemas
+###UPDATE NAME OF GCM for adddinh to output file nemas
 GCM<- "CCSM4"   #enter name of GCM to include with file
 
-##concatenate GCM name with other info, dont change
-historic_name<-paste0("LOCA_", GCM,"_Monthly_historical")
-future_name<-paste0("LOCA_", GCM,"_Monthly_rcp85")
-
-#define hist file locations
+#define hist file locations, update to reflect correct GCM 
 hist.pr.files<-list.files("T:/LOCA/CCSM4/historical/pr/", full.names = T)
 hist.tmin.files<-list.files("T:/LOCA/CCSM4/historical/tasmin/", full.names = T)
 hist.tmax.files<-list.files("T:/LOCA/CCSM4/historical/tasmax/", full.names = T)
@@ -54,8 +51,6 @@ end_day<-c(31,59,90,120,151,181,212,243,273,304,334,365)
 leap_start<-c(1,32,61,92,122,153,183,214,245,275,306,336)
 leap_end<-c(31,60,91,121,152,182,213,244,274,305,335,366)
 month_day<-as.data.frame(cbind(month_num, start_day, end_day, leap_start, leap_end))
-
-
 
 #################################################################################
 #PART 1 loop for historic data

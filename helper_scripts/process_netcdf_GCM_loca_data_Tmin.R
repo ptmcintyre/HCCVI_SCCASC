@@ -1,3 +1,10 @@
+###This script takes netcdf files of daily LOCA climate data
+##and translates them to individual rasters of monthly target data by year
+##currently separate scripts for preicp/tmin/tmax but could be combined
+## check that script is updated to correctly save rasters as WGS84 with -180 to -180 lat/long coords
+
+
+
 library(ncdf4) # package for netcdf manipulation
 library(raster) # package for raster manipulation
 library(rgdal) # package for geospatial analysis

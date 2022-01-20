@@ -1,5 +1,14 @@
+###
+
+
 library(raster)
 library(ecoclim)
+
+##To install ecoclim 02/17/2021
+#install.packages("remotes")
+#remotes::install_github("matthewkling/ecoclim") 
+
+
 
 #years<-seq(1950,2005, 1) #for historic
 years<-seq(2006,2100, 1) #for future

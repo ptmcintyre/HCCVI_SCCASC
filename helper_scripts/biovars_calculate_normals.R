@@ -1,5 +1,5 @@
 library(terra)
-
+library(raster)
 
 
 bio_num<-seq(1,19,1)

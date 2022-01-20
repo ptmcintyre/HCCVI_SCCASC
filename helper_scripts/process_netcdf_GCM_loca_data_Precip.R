@@ -1,3 +1,9 @@
+###This script takes netcdf files of daily LOCA climate data
+##and translates them to individual rasters of monthly target data by year
+##currently separate scripts for preicp/tmin/tmax but could be combined
+## check that script is updated to correctly save rasters as WGS84 with -180 to -180 lat/long coords
+
+
 library(ncdf4) # package for netcdf manipulation
 library(raster) # package for raster manipulation
 library(rgdal) # package for geospatial analysis
@@ -11,6 +17,7 @@ clim.files
 loca.template<-raster(clim.files[1])
 
 #define month and days for slicing netcdf file
+#would be good to update for leap years
 month_num<-c(1,2,3,4,5,6,7,8,9,10,11,12)
 start_day<-c(1,32,60,91,121,152,182,213,244,274,305,335)
 end_day<-c(31,59,90,120,151,181,212,243,273,304,334,365)
@@ -50,7 +57,7 @@ dim(pr.array)
     
     r <- raster(t(pr.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), template=loca.template)
     r<-flip(r)
-    r<-r*86400  #multiply by 86400 to convert to mm/day (seconds in a day)
+    r<-r*86400  #multiply by 86400 to convert to mm/day (from kg/m2/seconds in a day)
     # writeRaster(r, paste0("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/monthly_vals_year/historic/", 
     #                       base_name,"_", years[i], "_", month_day$month_num[j], ".tif"), "GTiff", overwrite=TRUE)
     

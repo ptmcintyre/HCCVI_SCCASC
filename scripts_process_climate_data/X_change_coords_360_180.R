@@ -1,7 +1,10 @@
+###this script changed coordinates from original system in netcdf files to map correctly
+##to convert from 0 -360 to 180-180 should be -360 for values greater than 180. Here just -360 since all values greater than 180 for longitude
+library(terra)
 library(raster)
 
 
-clim.files<-list.files("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/biovars_year", full.names = T)
+clim.files<-list.files("S:/Projects/SCCASC_HCCVI/HCCVI_SCCASC_R_Project/process_initial_climate_data/biovars_yearWGS84", full.names = T)
 new.file<-gsub("biovars_year", "biovars_yearWGS84",clim.files)
 i=1
 for (i in 1:length(clim.files)){

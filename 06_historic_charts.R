@@ -1,4 +1,9 @@
 # HISTORIC CONUS
+#optional script to produce graphics from M. Kling
+#some things to update- calls local copy of shapefile for state boudnaries
+#better to grab from a package
+
+
 
 library(ecoclim)
 library(raster)
@@ -11,6 +16,7 @@ library(caret)
 library(mgcv)
 library(randomForest)
 library(here)
+library(sf)
 
 extract <- raster::extract
 
@@ -32,12 +38,13 @@ vars<-names(dd)
 
 
 # load model predictions
-preds <- list.files(here("type_specific_modeling/niche_models/historic/rasters_timeslice"),
+preds <- list.files(here("type_specific_modeling/niche_models/future_85/rasters_timeslice"),
                     full.names=T)
 
 # load veg data
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
+veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
+
 #veggies<-veggies[[c(1,14)]]
 #names(veggies) <- sub(".tif", "", basename(paths))
 
@@ -59,8 +66,8 @@ imp <- imp[imp$rank >= 14,]
 
 
 
-outd <- here("type_specific_modeling/niche_models/historic/charts")
-outdrgb <- here("type_specific_modeling/niche_models/historic/rasters_rgb")
+outd <- here("type_specific_modeling/niche_models/future_85/charts")
+outdrgb <- here("type_specific_modeling/niche_models/future_85/rasters_rgb")
 
 
 
@@ -73,14 +80,14 @@ names(veggies)
 veggie.names<-names(veggies)
 
 # cluster stetup
-cpus <- 12
+cpus <- 3
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
-#type="Central_Mixedgrass_Prairie"
+#type="Crosstimbers_Oak_Forest_and_Woodland"
 # loop
 r <- foreach(type=names(veggies),
-             .packages=c("viridis", "raster", "ecoclim", "dismo", "dplyr", "caret",
-                         "randomForest", "ggplot2", "tidyr", "dplyr", "gridExtra", "grid", "here"), .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/3.5")) %dopar% {
+             .packages=c("viridis", "raster", "ecoclim", "dismo", "dplyr", "caret", "sf",
+                         "randomForest", "ggplot2", "tidyr", "dplyr", "gridExtra", "grid", "here")) %dopar% {
                                #type <- names(veggies)[2]
                                outdir <- paste(outd, type, sep="/")
                                dir.create(outdir)
@@ -98,14 +105,27 @@ r <- foreach(type=names(veggies),
                                names(climate) <- vars
                                
                                # prep state boundary data
-                               states <- rgdal::readOGR("I:/projects/BLM/Workspace/kling/shapefiles", layer="US_states")
-                               ext <- extent(pred)
-                               ext <- as(ext, "SpatialPolygons")
-                               proj4string(ext) <- CRS(proj4string(states))
-                               states <- rgeos::gIntersection(states, ext, byid=T)
-                               states.points <- fortify(states)
-                               states.points$region <- "states"
-                               states.points$polygon <- as.numeric(states.points$piece) + 1000
+                               #states <- rgdal::readOGR("I:/projects/BLM/Workspace/kling/shapefiles", layer="US_states")
+                               states<-st_read("I:/projects/BLM/Workspace/kling/shapefiles/US_states.shp")
+                               states<-st_make_valid(states) 
+                              
+                               #ext <- extent(pred)
+                               #ext <- as(ext, "SpatialPolygons")
+                               ###pjm swithcing to sf
+                               ext<- st_bbox(pred)
+                               ext<-st_as_sfc(ext)
+                               
+                               #proj4string(ext) <- CRS(proj4string(states))
+                               #states <- rgeos::gIntersection(states, ext, byid=T)
+                               #states<-st_simplify(states)
+                               states<-st_intersection(states, ext)
+
+                               #states.points <- fortify(states)
+                               #states.points$region <- "states"
+                               #states.points$polygon <- as.numeric(states.points$piece) + 1000
+                               
+                               #states_as_points<-st_cast(states, "MULTIPOINT")
+                               #plot(st_geometry(states.points, col="blue"))
                                
                                ### restructure veg data
                                veg <- subset(veggies, type)
@@ -177,12 +197,13 @@ r <- foreach(type=names(veggies),
                                p2 <- ggplot() +
                                      geom_raster(data=cwdf$data, aes(x, y),fill=fade, alpha=1) +
                                      geom_raster(data=cwdf$data, aes(x, y, alpha=distance, fill=angle)) +
-                                     geom_path(data=states.points[states.points$piece==1,], aes(x=long, y=lat, group=id),
-                                               color="white", fill=NA, size=.6) +
+                                     #geom_path(data=states.points, aes(x=long, y=lat, group=id),
+                                     #         color="white", fill=NA, size=.6) +
+                                     geom_sf(data = states, color="red", fill=NA)+
                                      cwdf$scales +
                                      theme(axis.title=eb(), axis.text=eb(), axis.ticks=eb()) +
-                                     whiteness() +
-                                     coord_fixed(ratio=1.2)
+                                     whiteness() #+
+                                     #coord_fixed(ratio=1.2)
                                
                                
                                ### export rgb raster for mapping in ArcGIS
@@ -258,15 +279,14 @@ r <- foreach(type=names(veggies),
                                      gather(variable, value, -x, -y)
                                p <- ggplot() +
                                      geom_raster(data=d, aes(x, y, fill=value)) +
-                                     geom_path(data=states.points[states.points$piece==1,], aes(x=long, y=lat, group=id),
-                                               color="white", fill=NA, size=.6) +
+                                     geom_sf(data = states, color="red", fill=NA)+
                                      #scale_fill_gradientn(colours=c("gray80", "yellowgreen", "darkgreen"), limits=c(0, 1)) +
                                      scale_fill_gradientn(colours=rev(viridis_pal()(256))) + #############################################
                                facet_grid(.~variable) +
                                      labs(fill="presence probability  ",
                                           title=paste0(typename, ":\nactual vs. predicted presence")) +
                                      whiteness() +
-                                     coord_fixed(ratio=1.2) +
+                                     #coord_fixed(ratio=1.2) +
                                      theme(legend.position="top", axis.title=eb(), axis.text=eb(), axis.ticks=eb())
                                ggsave(paste0(substr(paste0(outdir, "/historic_conus_map_actual_predicted_", type), 1, 255), ".png"), p, width=12, height=9)       
                                
@@ -280,16 +300,15 @@ r <- foreach(type=names(veggies),
                                mag <- max(abs(d$pred_delta))
                                p <- ggplot() +
                                      geom_raster(data=d, aes(x, y, fill=pred_delta)) +
-                                     geom_path(data=states.points[states.points$piece==1,], aes(x=long, y=lat, group=id),
-                                               color="white", fill=NA, size=.6) +
+                                      geom_sf(data = states, color="red", fill=NA)+
                                      #scale_fill_gradient2(low="red", high="limegreen", mid="gray80", midpoint=0) +
                                      scale_fill_gradientn(colours=orangepurple, limits=c(-mag, mag)) +
                                      facet_grid(.~extent) +
                                      labs(fill="change in suitability  ",
                                           title=paste0(typename, ":\nmodeled change in suitability")) +
                                      whiteness() +
-                                     theme(legend.position="top", axis.title=eb(), axis.text=eb(), axis.ticks=eb()) +
-                                     coord_fixed(ratio=1.2)
+                                     theme(legend.position="top", axis.title=eb(), axis.text=eb(), axis.ticks=eb()) #+
+                                     #coord_fixed(ratio=1.2)
                                ggsave(paste0(substr(paste0(outdir, "/historic_conus_map_change_", type), 1, 255), ".png"), p, width=12, height=9)       
                                
                                # latitudinal and elevational gradients

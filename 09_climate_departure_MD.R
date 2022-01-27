@@ -17,7 +17,7 @@ library(adehabitatLT)
 b <- parseMetadata(here("biovars/biovars_by_year_multiband/baseline"))
 #b[-grep("rcp85", b$path), ]#drop rcp85
 b <- dplyr::arrange(b, year)
-b <- b[b$year <= 2005,]
+b <- b[b$year <= 1981,]
 baseline <- b
 
 # load  normals for comparing time period and emissions scenario
@@ -29,8 +29,9 @@ recent <- motleyStack(r$path)
 names(recent) <- vars
 
 # load veg data DO WE WANT BPS or EVT?
-veg_rasters<- list.files(here("system_distributions/MACA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/MACA_rasters", veg_rasters))
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
+#veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters[4:6]))
+veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
 
 ## filter out cnmx types
 #cnmx <- read.csv("I:/projects/DOCE/workspace/auer/identifying_cnmx_types/cnmx_types.csv")
@@ -124,7 +125,7 @@ mahal <- function(type, overwrite=F){
             mask(r[[1]])
       clim <- stack(ve, r, b)
       
-      beginCluster(15)
+      beginCluster(6)
       md <- clusterR(clim, calc, args=list(fun=novelty), m = 100)
       md <- crop(md, veg)
       endCluster()
@@ -161,3 +162,4 @@ for(i in 1:length(md.rasters)){
 
 
 stopCluster(cl)
+

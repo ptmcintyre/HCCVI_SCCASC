@@ -39,8 +39,8 @@ dr <- stack(here("biovars/future_85", near.biovars))
 names(dr) <- sort(paste0("bio", 1:19))
 
 # load veg data
-veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
-veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters/NV"), pattern=".tif")
+veggies <- raster::stack(here("system_distributions/LOCA_rasters/NV", veg_rasters))
 
 
 
@@ -59,11 +59,11 @@ veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
 
 
 # load variable importance data
-imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importance.csv"), stringsAsFactors=F)
+imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importance_NV.csv"), stringsAsFactors=F)
 imp <- imp[imp$rank >= 14,]
 
 # cluster stetup
-cpus <- 2
+cpus <- 4
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
 
@@ -73,7 +73,7 @@ r <- foreach(type=names(veggies),
                    
                    ### restructure veg data
                    veg <- subset(veggies, type)
-                   veg <- trimFast(extend(veg, 2))
+                   #veg <- trimFast(extend(veg, 2))
                    
                    names(veg) <- "veg"
                    veg <- reclassify(veg, c(NA, NA, 0))
@@ -82,7 +82,9 @@ r <- foreach(type=names(veggies),
                    
                    
                    ### prep climate data
-                   vars_used <- imp$var[imp$type == gsub("_", " ", type)]
+                   #vars_used <- imp$var[imp$type == gsub("_", " ", type)]
+                   vars_used <- imp$var[imp$type ==  type]
+                   
                    
                    climate <- crop(dd, veg) 
                    climate <- subset(climate, vars_used)

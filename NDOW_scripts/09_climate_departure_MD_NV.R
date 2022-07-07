@@ -9,6 +9,7 @@ library(doParallel)
 library(tidyverse)
 library(here)
 library(adehabitatLT)
+library(snow)
 #library(caret)
 
 #gc()
@@ -29,9 +30,9 @@ recent <- motleyStack(r$path)
 names(recent) <- vars
 
 # load veg data DO WE WANT BPS or EVT?
-veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
-#veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters[4:6]))
-veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters/NV"), pattern=".tif")
+#veggies <- raster::stack(here("system_distributions/LOCA_rasters/NV", veg_rasters[4:6]))
+veggies <- raster::stack(here("system_distributions/LOCA_rasters/NV", veg_rasters))
 
 ## filter out cnmx types
 #cnmx <- read.csv("I:/projects/DOCE/workspace/auer/identifying_cnmx_types/cnmx_types.csv")
@@ -39,7 +40,7 @@ veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
 #veggies <- subset(veggies, names(veggies)[!names(veggies) %in% cnmx])
 
 # load variable importance data
-imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importance.csv"), stringsAsFactors=F)
+imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importance_NV.csv"), stringsAsFactors=F)
 imp <- imp[imp$rank >= 14,]
 
 
@@ -90,13 +91,13 @@ mahal <- function(type, overwrite=F){
       
       ### prep veg data
       veg <- subset(veggies, type)
-      veg <- trimFast(extend(veg, 2))
+      #veg <- trimFast(extend(veg, 2))
       names(veg) <- "veg"
       
       ### prep climate data
       
       # restrict analysis to focal vars
-      vars_used <- imp$var[imp$type == gsub("_", " ", type)][1:6]
+      vars_used <- imp$var[imp$type ==type][1:6]
      
       
       b <- lapply(baseline$path, stack) %>%
@@ -151,7 +152,7 @@ v <- purrr::map_chr(types, possibly(mahal, "fail"))
 md.rasters <- parseMetadata(here("type_specific_modeling/climate_departure/bl_fut_85"),pattern=".tif")
 i=5
 
-names(md.rasters)
+md.rasters
 for(i in 1:length(md.rasters)){
   veg.md<-raster(md.rasters[[i]][1])
   veg.md[!is.na(veg.md)]<-pchi(veg.md[!is.na(veg.md)], 2)

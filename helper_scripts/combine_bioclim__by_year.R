@@ -25,12 +25,13 @@ names(b)
 names(b)[3]<-"time"
 b[1000,]
 #realized there are two scenarios for futre, so twice as many files, need to select one scenario
-my.years2<-my.years[31:80]
+#my.years2<-my.years[1:31]
+my.years2<-my.years[66:96]
 
 
 #b<-b[-grep("rcp45", b$path), ]
 
-cpus <- 12
+cpus <- 3
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
 
@@ -51,7 +52,7 @@ foreach(year= unique(my.years2),
           
 
           
-          writeRaster(s, filename=paste0(here("biovars/biovars_by_year_multiband"),"/biovars_maca_rcp85_", year, ".tif"), 
+          writeRaster(s, filename=paste0(here("biovars/biovars_by_year_multiband"),"/biovars_LOCA_rcp85_", year, ".tif"), 
                       format="GTiff", overwrite=T)
           
         

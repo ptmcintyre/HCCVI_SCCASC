@@ -42,7 +42,7 @@ cpus <- 2
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
 i=1
-foreach(i=1:length(map_values)) %dopar% {
+foreach(i=1:length(map_values), .packages=c("here", "terra")) %dopar% {
   #.libPaths("C:/Users/Patrick_McIntyre/Documents/R/win-library/4.1")
   .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/4.1")  
   #library(raster)

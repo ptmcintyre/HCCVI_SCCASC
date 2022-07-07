@@ -29,9 +29,9 @@ recent <- motleyStack(r$path)
 names(recent) <- vars
 
 # load veg data DO WE WANT BPS or EVT?
-veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".tif")
+veg_rasters<- list.files(here("system_distributions/LOCA_rasters/NV/"), pattern=".tif")
 #veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters[4:6]))
-veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
+veggies <- raster::stack(here("system_distributions/LOCA_rasters/NV/", veg_rasters))
 
 ## filter out cnmx types
 #cnmx <- read.csv("I:/projects/DOCE/workspace/auer/identifying_cnmx_types/cnmx_types.csv")
@@ -39,7 +39,7 @@ veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
 #veggies <- subset(veggies, names(veggies)[!names(veggies) %in% cnmx])
 
 # load variable importance data
-imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importance.csv"), stringsAsFactors=F)
+imp <- read.csv(here("type_specific_modeling/variable_selection/variable_importance_NV.csv"), stringsAsFactors=F)
 imp <- imp[imp$rank >= 14,]
 
 
@@ -125,7 +125,7 @@ mahal <- function(type, overwrite=F){
             mask(r[[1]])
       clim <- stack(ve, r, b)
       
-      beginCluster(4)
+      beginCluster(6)
       md <- clusterR(clim, calc, args=list(fun=novelty), m = 100)
       md <- crop(md, veg)
       endCluster()

@@ -37,15 +37,6 @@ template[template<30]<-0
 plot(template)
 
 
-#template <- reclassify(template, c(-Inf, Inf, NA))
-#template <- classify(template, c(-Inf, Inf, NA))
-
-
-# define the subset of types to run
-#test_rast<-raster(vegtypes[1])
-
-
-
 vegtypes_run <- vegtypes
 
 #polygon LOCA template for summarizing bps raster values in and converting to upscaped raster 
@@ -79,10 +70,9 @@ for(veg in vegtypes_run){
       writeRaster(my.rast, filename=paste(outfile, "_continuous.tif", sep=""), overwrite=T)
 }
 
-extent(clim_poly)
-extent(template)
+
 
 rm()
 gc()
 
-max(clim_poly$veg)
+

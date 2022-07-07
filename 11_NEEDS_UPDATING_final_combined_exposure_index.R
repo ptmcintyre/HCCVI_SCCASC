@@ -23,18 +23,6 @@ paths <- paths[!grepl(".aux|.ovr", paths)]
 distrib <- stack(paths)
 names(distrib) <- sub(".tif", "", basename(paths))
 
-# select CONUS types
-cnmx <- c("Sonora_Mojave_Creosotebush_White_Bursage_Desert_Scrub",
-          "Sonoran_Paloverde_Mixed_Cacti_Desert_Scrub",
-          "Apacherian_Chihuahuan_SemiDesert_Grassland_and_Steppe",
-          "Chihuahuan_Creosotebush_Desert_Scrub",
-          "Chihuahuan_Mixed_Desert_and_Thornscrub",
-          "Northwestern_Great_Plains_Mixedgrass_Prairie", 
-          "Rocky_Mountain_Foothill_Limber_Pine_Juniper_Woodland",
-          "Madrean_Pinyon_Juniper_Woodland",
-          "Northern_Rocky_Mountain_Subalpine_Woodland_and_Parkland")
-distrib <- subset(distrib, names(distrib)[!names(distrib) %in% cnmx])
-
 
 # cluster stetup
 cpus <- 12

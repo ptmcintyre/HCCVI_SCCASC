@@ -38,18 +38,6 @@ veg_rasters<- list.files(here("system_distributions/LOCA_rasters"), pattern=".ti
 veggies <- raster::stack(here("system_distributions/LOCA_rasters", veg_rasters))
 names(veggies)
 
-# select CONUS types
-# cnmx <- c("Sonora_Mojave_Creosotebush_White_Bursage_Desert_Scrub",
-#           "Sonoran_Paloverde_Mixed_Cacti_Desert_Scrub",
-#           "Apacherian_Chihuahuan_SemiDesert_Grassland_and_Steppe",
-#           "Chihuahuan_Creosotebush_Desert_Scrub",
-#           "Chihuahuan_Mixed_Desert_and_Thornscrub",
-#           "Northwestern_Great_Plains_Mixedgrass_Prairie", 
-#           "Rocky_Mountain_Foothill_Limber_Pine_Juniper_Woodland",
-#           "Madrean_Pinyon_Juniper_Woodland",
-#           "Northern_Rocky_Mountain_Subalpine_Woodland_and_Parkland")
-# veggies <- subset(veggies, names(veggies)[!names(veggies) %in% cnmx])
-
 
 # this function fits a random forest model to a set of training data, 
 # and returns the AUC for a set of evaluation data

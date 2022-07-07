@@ -28,26 +28,13 @@ historic.biovars
 #template<-raster(historic.biovars[1])  #using raster package
 template<-rast(historic.biovars[1])  #using new terra package
 
-#Read in systems raster (here filtered to only have target systems), crop to extent of climate layers
-#CEMML_systems_BPS<-raster(here("system_distributions/IVC_BPS_CEMML_v846", "IVC_BPS_CEMML_v846.tif")) #clipped version
-#CEMML_systems_BPS<-rast("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_Ecosystems_potential_NatureServe_v846.tif")
-#CEMML_systems_BPS<-raster("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_BPS846_wgs84.tif")
-#CEMML_systems_BPS<-rast("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_BPS846_wgs84.tif")
-#activeCat(CEMML_systems_BPS, layer=1)
-#setCats(CEMML_systems_BPS, layer=1,cats(CEMML_systems_BPS)[1]$Value)
-
 
 detectCores()
 cpus <- 2
 cl <- makeCluster(cpus)
 registerDoParallel(cl)
 i=1
-foreach(i=1:length(map_values)) %dopar% {
-  #.libPaths("C:/Users/Patrick_McIntyre/Documents/R/win-library/4.1")
-  .libPaths("C:/Users/patrick_mcintyre/Documents/R/win-library/4.1")  
-  #library(raster)
-  library(here)
-  library(terra)
+foreach(i=1:length(map_values), .packages=c("terra", "here")) %dopar% {
   CEMML_systems_BPS<-rast("S:/Projects/SCCASC_HCCVI/SCCASC_GIS/NorthAmerica_IVC_BPS846_wgs84.tif")
   activeCat(CEMML_systems_BPS, layer=1)
   setCats(CEMML_systems_BPS, layer=1,cats(CEMML_systems_BPS)[1]$Value)
